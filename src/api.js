@@ -1,6 +1,4 @@
 import axios from 'axios';
-import dotenv from "dotenv-defaults"
-dotenv.config();
 
 const instance = axios.create({
   baseURL: "english-vocab-learner.herokuapp.com/api",
@@ -8,7 +6,7 @@ const instance = axios.create({
 
 /*
 const instance = axios.create({
-  baseURL: `http://localhost:${process.env.PORT || 80}/`,
+  baseURL: `http://localhost:5000/api`,
 });
 */
 

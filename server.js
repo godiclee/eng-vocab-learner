@@ -18,13 +18,8 @@ app.listen(port, () =>
   console.log(`Example app listening on port ${port}!`),
 );
 
-app.get("/api/new-card", (req, res) => {
-  res.json({card: "love you"});
-});
-
-app.post("/api/add-card", (req, res) => {
-  console.log(req.body.word);
-});
+import router from './backend/routes/router.js'
+app.use('/api', router);
 
 import path from "path";
 import { dirname } from "path";
