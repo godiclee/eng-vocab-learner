@@ -12,8 +12,8 @@ app.use(bodyParser.json());
 
 import mongoose from 'mongoose';
 mongoose.connect(process.env.MONGO_URL, {useNewUrlParser: true, useUnifiedTopology: true,}).then((res) => console.log("mongo db connection created"));
-
-const port = process.env.PORT || 4000;
+""
+const port = process.env.PORT || 5000;
 app.listen(port, () =>
   console.log(`Example app listening on port ${port}!`),
 );
