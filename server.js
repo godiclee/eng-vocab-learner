@@ -25,7 +25,7 @@ app.get('/*', (req, res) => {
 /* "nodemon server.js --ext js --exec babel-node", */
 /* "node server.js" */
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 80;
 app.listen(port, () =>
   console.log(`Example app listening on port ${port}!`),
 );
