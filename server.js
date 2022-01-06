@@ -23,7 +23,15 @@ app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 80;
 app.listen(port, () =>
   console.log(`Example app listening on port ${port}!`),
 );
+
+app.get("/new-card", (req, res) => {
+  res.json({card: "love you"});
+});
+
+app.post("/add-card", (req, res) => {
+  console.log(req.body.word);
+});
