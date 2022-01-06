@@ -18,6 +18,14 @@ app.listen(port, () =>
   console.log(`Example app listening on port ${port}!`),
 );
 
+app.get("/api/new-card", (req, res) => {
+  res.json({card: "love you"});
+});
+
+app.post("/api/add-card", (req, res) => {
+  console.log(req.body.word);
+});
+
 import path from "path";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
@@ -28,12 +36,3 @@ app.get('/*', (req, res) => {
 });
 /* "nodemon server.js --ext js --exec babel-node", */
 /* "node server.js" */
-
-app.get("/api/new-card", (req, res) => {
-  res.json({card: "love you"});
-});
-
-app.post("/api/add-card", (req, res) => {
-  console.log(req.body.word);
-});
-
