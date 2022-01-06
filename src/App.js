@@ -64,7 +64,7 @@ function App() {
     } = await axios.post('/add-card', {
       word
     });
-    console.log(qq):
+    console.log(qq);
   }
 
   return (
