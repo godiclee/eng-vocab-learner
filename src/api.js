@@ -3,7 +3,7 @@ import dotenv from "dotenv-defaults"
 dotenv.config();
 
 const instance = axios.create({
-  baseURL: "english-vocab-learner.herokuapp.com",
+  baseURL: "english-vocab-learner.herokuapp.com/api",
 });
 
 /*
