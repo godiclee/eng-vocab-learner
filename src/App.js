@@ -13,11 +13,9 @@ import { useState, useEffect } from 'react';
 
 import dotenv from "dotenv-defaults"
 import axios from 'axios';
-dotenv.config();
-let baseurl = process.env.baseURL || "http://localhost:5000"
 
 const axio = axios.create({
-  baseURL: `${baseurl}/api`,
+  baseURL: `/api`,
 });
 
 
