@@ -48,7 +48,7 @@ function App() {
   const query = async () => {
     const {
       data: { card },
-    } = await axios.get("/new-card");
+    } = await axios.get("/api/new-card");
     console.log(card);
     
   }
@@ -61,7 +61,7 @@ function App() {
 
     const {
       data: { result }, 
-    } = await axios.post('/add-card', {
+    } = await axios.post('/api/add-card', {
       word
     });
   }
