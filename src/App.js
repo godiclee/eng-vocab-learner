@@ -10,7 +10,16 @@ import TextField from '@mui/material/TextField';
 import { useState, useEffect } from 'react';
 
 
-import axios from './api';
+
+import dotenv from "dotenv-defaults"
+import axios from 'axios';
+dotenv.config();
+let baseurl = process.env.baseURL || "http://localhost:5000"
+
+const axio = axios.create({
+  baseURL: `${baseurl}/api`,
+});
+
 
 const card = (
   <React.Fragment>
@@ -48,7 +57,7 @@ function App() {
   const query = async () => {
     const {
       data: { card },
-    } = await axios.get("/new-card");
+    } = await axio.get("/new-card");
     console.log(card);
     
   }
@@ -61,7 +70,7 @@ function App() {
 
     const {
       data: { qq }, 
-    } = await axios.post('/add-card', {
+    } = await axio.post('/add-card', {
       word
     });
     console.log(qq);
