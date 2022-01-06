@@ -12,6 +12,7 @@
     "cors": "^2.8.5",
     "dotenv-defaults": "^3.0.0",
     "mongoose": "^6.1.5",
+    "nodemon": "^2.0.15",
     "npx": "^10.2.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -19,7 +20,7 @@
     "web-vitals": "^2.1.2"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "nodemon server.js --ext js --exec babel-node",
     "build": "react-scripts build",
     "start_react": "react-scripts start",
     "test": "react-scripts test",
@@ -42,5 +43,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.16.7",
+    "@babel/core": "^7.16.7",
+    "@babel/node": "^7.16.7",
+    "@babel/preset-env": "^7.16.7"
   }
 }
