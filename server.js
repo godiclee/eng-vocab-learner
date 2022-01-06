@@ -22,6 +22,8 @@ app.use(express.static(path.join(__dirname, 'build')));
 app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
+/* "nodemon server.js --ext js --exec babel-node", */
+/* "node server.js" */
 
 const port = process.env.PORT || 5000;
 app.listen(port, () =>
