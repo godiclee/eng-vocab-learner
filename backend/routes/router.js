@@ -8,6 +8,7 @@ router.get("/new-card", (req, res) => {
   
 router.post("/add-card", (req, res) => {
 	console.log(req.body.word);
+	res.json({qq: "success"});
 });
 
 export default router

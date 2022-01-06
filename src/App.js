@@ -60,10 +60,11 @@ function App() {
     const word = e.target.value;
 
     const {
-      data: { result }, 
+      data: { qq }, 
     } = await axios.post('/add-card', {
       word
     });
+    console.log(qq):
   }
 
   return (
