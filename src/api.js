@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: "english-vocab-learner.herokuapp.com/api",
+  baseURL: "",
 });
 
 /*
