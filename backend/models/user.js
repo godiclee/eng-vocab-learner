@@ -10,24 +10,27 @@ const User_Card_Schema = new Schema({
 });
 
 const UserSchema = new Schema({
-	name: String,
+	username: String,
+	password_hash: String,
 	
 	/* statistics */
 	skilled: Number,
 	not_learned: Number,
 	learned_but_not_skilled: Number,
+	last_login: Date,
 	
 	/* settings */
+	level: Number,
 	only_new: Boolean,
 	only_old: Boolean,
 	freq_of_new: Number,
 	finish_hardness: Number,
 	
 	/* cards */
-	new: [Schema.Types.ObjectId],
-	skilled: [Schema.Types.ObjectId],
-	black: [Schema.Types.ObjectId],
-	learned: [User_Card_Schema],
+	not_learned_cards: [Schema.Types.ObjectId],
+	skilled_cards: [Schema.Types.ObjectId],
+	black_cards: [Schema.Types.ObjectId],
+	learned_but_not_skilled_cards: [User_Card_Schema],
 })
 
 const User = mongoose.model('User', UserSchema);

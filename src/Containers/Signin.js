@@ -1,23 +1,71 @@
-import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
-import Stack from '@mui/material/Stack'
-import TextField from '@mui/material/TextField'
+import { useState } from 'react';
+import { Button, Divider, Stack, TextField } from '@mui/material';
+import Register from '../Containers/Register'
+import axios from '../api.js';
 
-import Wrapper from '../Components/Wrapper'
+function Signin({ signIn }) {
+	const [username, setUsername] = useState();
+	const [password, setPassword] = useState('');
+	const [registering, setRegistering] = useState(false);
 
-function Signin() {
+	const clickLoginButton = async (e) => {
+		e.preventDefault();
+		
+		const {
+			data: { exist },
+		} = await axios.get('/check-user-exist', {params: { username }}); 
+
+		if (!exist) {
+			alert(`用戶名稱 ${username} 不存在!`);
+			return;
+		}
+
+		const {
+			data: { success, user },
+		} = await axios.post('/login', { username, password });
+		
+		if (!success) {
+			alert('密碼不正確!');
+		} else {
+			signIn(user);
+		}
+	}
+
+	const clickRegisterButton = (e) => {
+		e.preventDefault();
+		setRegistering(true);
+	}
+
+	const clickReturnButton = (e) => {
+		if (e)
+			e.preventDefault();
+		setRegistering(false);
+	}
+	
 	return (
-		<Wrapper>
-			歡迎使用地獄英文單字訓練程式
-			<TextField label='用戶名稱' />
-			<TextField label='密碼' />
-			<Stack direction='row' spacing={2} divider={<Divider orientation='vertical' />}>
-				<Button variant='contained'>登入</Button>
-				<Button variant='contained'>註冊</Button>
-			</Stack> 
-		</Wrapper>
+		<>
+			{registering ? 
+				<Register clickReturnButton={clickReturnButton} /> 
+				: 
+				<>
+					歡迎使用天堂英文單字訓練程式
+
+					<Stack direction='column' spacing={1}>
+						<TextField label='用戶名稱' onChange={(e) => setUsername(e.target.value)}/>
+						<TextField label='密碼' onChange={(e) => setPassword(e.target.value)}　/>
+					</Stack>
+					
+					<Stack direction='row' spacing={2} divider={<Divider orientation='vertical' />}>
+						<Button variant='contained' 
+							onClick={clickLoginButton}　
+							disabled={!username || !password}
+						>登入</Button>
+						<Button variant='contained' onClick={clickRegisterButton}>註冊</Button>
+					</Stack>
+				</> 
+			}	
+		</>
 	)
 }
-
 
 export default Signin;
