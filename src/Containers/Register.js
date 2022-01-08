@@ -11,15 +11,15 @@ function Register( { clickReturnButton }) {
 	const clickSubmitButton = async () => {
 		const {
 			data: { exist },
-		} = await axios.get('/check-user-exist', {params: { username }}); 
+		} = await axios.get('/login/check-user-exist', {params: { username }}); 
 
 		if (exist) {
 			alert(`用戶名稱 ${username} 已經存在！`);
 		} else {
 			const {
 				data: { success },
-			} = await axios.post('/create-user', { username, password, level });
-
+			} = await axios.post('/login/create-user', { username, password, level });
+			
 			if (!success) { 
 				alert('不明原因新增帳號失敗，請重試或聯絡管理員!');
 			} else {

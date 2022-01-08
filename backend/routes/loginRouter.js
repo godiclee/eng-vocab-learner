@@ -1,8 +1,6 @@
 import express from 'express'
-
 import Card from '../models/card.js'
 import User from '../models/user.js'
-
 import bcrypt from 'bcryptjs';
 var salt = bcrypt.genSaltSync(10);
 
@@ -16,7 +14,8 @@ router.get('/check-user-exist', async (req, res) => {
 router.post('/create-user', async (req, res) => {
 	const password = req.body.password;
 	const password_hash = bcrypt.hashSync(password, salt);
-	
+	const allCardId = await Card.find().distinct('_id');
+
 	const newUser = User({
 		"username" : req.body.username,
 		"password_hash" : password_hash,
@@ -26,16 +25,18 @@ router.post('/create-user', async (req, res) => {
 		"not_learned" : 0,
 		"learned_but_not_skilled" : 0,
 		"last_login": Date(),
+		"avg_priority": 0.0,
 	
 		/* settings */
 		"level" : req.body.level,
 		"only_new" : false,
 		"only_old" : false,
+		"multiple_hole" : true,
 		"freq_of_new" : 0,
 		"finish_hardness" : 0,
 		
 		/* cards */
-		"not_learned_cards" : [],
+		"not_learned_cards" : allCardId,
 		"skilled_cards" : [],
 		"black_cards" : [],
 		"learned_but_not_skilled_cards" : [],
@@ -47,17 +48,10 @@ router.post('/create-user', async (req, res) => {
 router.post('/login', async (req, res) => {
 	const user = await User.findOne({'username' : req.body.username});
 	const success = bcrypt.compareSync(req.body.password, user.password_hash);
-	await User.updateOne({'username' : req.body.username, 'last_login' : Date()});
-	res.json({success: success, user: user})
+	const last_login = user.last_login;
+	await User.updateOne({'username' : req.body.username}, {'last_login' : Date()});
+	res.json({ success: success, user: req.body.username, last_login: last_login });
 });
 
-router.get('/new-card', (req, res) => {
-	res.json({card: "love you"});
-});
-  
-router.post('/add-card', (req, res) => {
-	res.json({qq: "success"});
-});
-
-export default router
+export default router;
   

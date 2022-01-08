@@ -18,8 +18,11 @@ app.listen(port, () =>
   console.log(`Example app listening on port ${port}!`),
 );
 
-import router from './backend/routes/router.js'
-app.use('/api', router);
+import loginRouter from './backend/routes/loginRouter.js';
+import cardRouter from './backend/routes/cardRouter.js';
+
+app.use('/api/login', loginRouter);
+app.use('/api/card', cardRouter);
 
 import path from "path";
 import { dirname } from "path";

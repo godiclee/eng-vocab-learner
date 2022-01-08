@@ -7,6 +7,7 @@ const User_Card_Schema = new Schema({
 	time: Number,
 	score: Number,
 	freq: Number,
+	priority: Number,
 });
 
 const UserSchema = new Schema({
@@ -18,11 +19,13 @@ const UserSchema = new Schema({
 	not_learned: Number,
 	learned_but_not_skilled: Number,
 	last_login: Date,
+	avg_priority: Number,
 	
 	/* settings */
 	level: Number,
 	only_new: Boolean,
 	only_old: Boolean,
+	multiple_hole: Boolean,
 	freq_of_new: Number,
 	finish_hardness: Number,
 	

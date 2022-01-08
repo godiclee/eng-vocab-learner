@@ -7,10 +7,11 @@ const CardSchema = new Schema({
 	chi: String,
 	eng: String,
 	pos: String,
-	chi_sen: String,
-	eng_sen: String,
+	chisen: String,
+	engsen: String,
 	level: Number,
 	hole: Number,
+	holes: [Number],
 	reported: Boolean,
 })
 

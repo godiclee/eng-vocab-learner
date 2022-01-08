@@ -13,7 +13,7 @@ function Signin({ signIn }) {
 		
 		const {
 			data: { exist },
-		} = await axios.get('/check-user-exist', {params: { username }}); 
+		} = await axios.get('/login/check-user-exist', {params: { username }}); 
 
 		if (!exist) {
 			alert(`用戶名稱 ${username} 不存在!`);
@@ -21,13 +21,13 @@ function Signin({ signIn }) {
 		}
 
 		const {
-			data: { success, user },
-		} = await axios.post('/login', { username, password });
-		
+			data: { success, user, last_login },
+		} = await axios.post('/login/login', { username, password });
+
 		if (!success) {
 			alert('密碼不正確!');
 		} else {
-			signIn(user);
+			signIn(user, last_login);
 		}
 	}
 
