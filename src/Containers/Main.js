@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useContext } from 'react';
 import Button from '@mui/material/Button'
 import VocabCard from './VocabCard.js'
 import Wrapper from '../Components/Wrapper'

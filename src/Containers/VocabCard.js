@@ -1,9 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent } from '@mui/material';
-
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import { Stack, Divider, ButtonGroup } from '@mui/material';
+import { Button, ButtonGroup, Card, CardContent,
+  Divider, LinearProgress, Stack, TextField  } from '@mui/material';
 import axios from '../api'
 
 function VocabCard({ username }) {
@@ -18,8 +15,9 @@ function VocabCard({ username }) {
   const [level, setLevel] = useState(0);
   const [holes, setHoles] = useState([]);
 
-  /* Whether this is a new card */
-  const [newCard, setNewCard] = useState(true);
+  const [newCard, setNewCard] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [buffer, setBuffer] = useState(0);
 
   /* TextField Related */
   const [userAnswer, setUserAnswer] = useState([]);
@@ -27,10 +25,14 @@ function VocabCard({ username }) {
   const [correct, setCorrect] = useState([]);
   const [incorrect, setIncorrect] = useState([]);
 
+  /* Whether it is already wrong (due to different behaviour during submit) */
+  const [alreadyCorrect, setAlreadyCorrect] = useState(false); /* for progress bar color */
+  const [alreadyWrong, setAlreadyWrong] = useState(false);
+
   const getCard = async () => {
 
     const {
-			data: { card, holes, newCard },
+			data: { card, holes, score, newcard },
 		} = await axios.get('/card/get-card', {params: { username }});
 
     setCard(card);
@@ -45,10 +47,14 @@ function VocabCard({ username }) {
     setEngsen(engsen_);
     
     setHoles(holes);
-    setNewCard(newCard);
+    setNewCard(newcard);
+    setProgress(score * 0.1);
+    setBuffer(score * 0.1);
 
     setUserAnswer(Array(card.holes.length).fill(''));
     setShowHint(false);
+    setAlreadyCorrect(false);
+    setAlreadyWrong(false);
     setCorrect(Array(card.holes.length).fill(0));
     setIncorrect(Array(card.holes.length).fill(0));
 
@@ -58,14 +64,16 @@ function VocabCard({ username }) {
 
   const updateCorrect = async () => {
     const {
-			data: { },
-		} = await axios.post('/card/correct', {params: { card, newCard }}); 
+			data: { score },
+		} = await axios.post('/card/correct', { username, card, newCard });
+    setProgress(score * 0.1)
   };
   
   const updateIncorrect = async () => {
     const {
-      data: { },
-    } = await axios.post('/card/incorrect', {params: { card, newCard }});
+      data: { score },
+    } = await axios.post('/card/incorrect', { username, card, newCard });
+    setProgress(score * 0.1);
   };
 
   const submitAnswer = async (e) => {
@@ -73,11 +81,15 @@ function VocabCard({ username }) {
     let result = 'correct';
     let first_incorrect = true;
     for (let i = 0; i < holes.length; i++) {
-      if (engsen[holes[i]] !== userAnswer[i]) {
+      if (engsen[holes[i]].toLowerCase() !== userAnswer[i].toLowerCase()) {
         setIncorrect(incorrect => incorrect.slice(0, i).concat([1], incorrect.slice(i+1)));
         if (first_incorrect) {
           document.getElementById(i.toString()).focus();
           first_incorrect = false;
+          if (!alreadyWrong) {
+            updateIncorrect();
+          }
+          setAlreadyWrong(true);
         }
         result = 'incorrect';
       } else {
@@ -87,12 +99,20 @@ function VocabCard({ username }) {
 
     /* Wait for 1s to either 1. show new card 2. show hints and wait for new answer */
     if (result === 'correct') {
-      setTimeout(() => { getCard(); }, 1000);
+      setTimeout(() => { 
+        getCard(); 
+      }, 750);
+      console.log(alreadyWrong)
+      if (!alreadyWrong) {
+        setAlreadyCorrect(true);
+        updateCorrect();
+      }
+      
     } else {
       setTimeout(() => { 
         setUserAnswer(Array(card.holes.length).fill('')); 
         setShowHint(true);
-      }, 1000);
+      }, 750);
     }
   }
 
@@ -120,7 +140,15 @@ function VocabCard({ username }) {
   
   return (
       <Card raised sx={{ color: 'primary.main', border: 1, width: 750, height: 500 }}>
-        <CardContent>Level {level}</CardContent>
+        <CardContent>
+          Level {level} {newCard ? 'New Card' : ''}
+          <LinearProgress 
+            variant="buffer" 
+            value={progress} 
+            valueBuffer={buffer}
+            color={alreadyCorrect ? 'success' : alreadyWrong ? 'warning' : 'secondary'}
+          />
+        </CardContent>
         <CardContent>
           {engsen.map((element, index) => {
             const i = holes.indexOf(index); /* i is the position in holes */
