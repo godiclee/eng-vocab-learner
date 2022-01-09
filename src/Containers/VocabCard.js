@@ -99,20 +99,22 @@ function VocabCard({ username }) {
 
     /* Wait for 1s to either 1. show new card 2. show hints and wait for new answer */
     if (result === 'correct') {
-      setTimeout(() => { 
-        getCard(); 
-      }, 750);
-      console.log(alreadyWrong)
       if (!alreadyWrong) {
         setAlreadyCorrect(true);
         updateCorrect();
       }
       
+      setTimeout(() => { 
+        getCard(); 
+      }, 500);
+
+
+      
     } else {
       setTimeout(() => { 
         setUserAnswer(Array(card.holes.length).fill('')); 
         setShowHint(true);
-      }, 750);
+      }, 500);
     }
   }
 
