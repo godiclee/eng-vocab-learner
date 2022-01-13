@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
 			'only_new' : 1,
 			'only_old' : 1,
 			'multiple_hole' : 1,
-			'freq_new' : 1,
+			'freq_of_new' : 1,
 			'finish_hardness' : 1
 		}
 	);
@@ -47,6 +47,14 @@ router.post('/onlyOld', async (req, res) => {
 	);
 	res.json({ msg: 'done' });
 });
+
+router.post('/showFirst', async (req, res) => {
+	await User.updateOne(
+		{ 'username' : req.body.username },
+		{ 'show_first' : !req.body.showFirst }
+	);
+	res.json({ msg: 'done' });
+})
 
 router.post('/multipleHole', async (req, res) => {
 	await User.updateOne(

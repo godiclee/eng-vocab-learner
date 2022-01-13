@@ -31,6 +31,7 @@ router.post('/create-user', async (req, res) => {
 		'level' : req.body.level,
 		'only_new' : false,
 		'only_old' : false,
+		'show_first' : true,
 		'multiple_hole' : true,
 		'freq_of_new' : 0,
 		'finish_hardness' : 0,

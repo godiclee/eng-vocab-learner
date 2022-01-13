@@ -13,6 +13,7 @@ router.get('/get-card', async (req, res) => {
 			'not_learned_cards' : 1,
 			'only_old' : 1,
 			'only_new' : 1,
+			'show_first' : 1,
 			'multiple_hole' : 1,
 			'freq_of_new' : 1
 		}
@@ -62,7 +63,8 @@ router.get('/get-card', async (req, res) => {
 				card: newCard,  
 				holes: user.multiple_hole ? newCard.holes : [newCard.hole],
 				score: 0,
-				newcard: true
+				newcard: true,
+				show_first: user.show_first
 			});
 			return;
 		}
@@ -82,7 +84,8 @@ router.get('/get-card', async (req, res) => {
 		card: oldCard[0],
 		holes: user.multiple_hole ? oldCard[0].holes : [oldCard[0].hole],
 		score: oldUserCard[0].score,
-		newcard: false
+		newcard: false,
+		show_first: user.show_first
 	});
 });
   

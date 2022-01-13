@@ -10,18 +10,20 @@ function Setting({ username }) {
 	const [level, setLevel] = useState(0);
 	const [onlyNew, setOnlyNew] = useState(false);
 	const [onlyOld, setOnlyOld] = useState(false);
-	const [multipleHole, setMultipleHole] = useState(true);
+	const [showFirst, setShowFirst] = useState(false);
+	const [multipleHole, setMultipleHole] = useState(false);
 	const [freqNew, setFreqNew] = useState(0);
 	const [finishHardness, setFinishHardness] = useState(0);
 
 	const getSetting = async () => {
 		const {
-			data: { level, only_new, only_old, multiple_hole, freq_new, finish_hardness },
+			data: { level, only_new, only_old, show_first, multiple_hole, freq_new, finish_hardness },
 		} = await axios.get('/setting/', { params: { username } });
 
 		setLevel(level);
 		setOnlyNew(only_new);
 		setOnlyOld(only_old);
+		setShowFirst(show_first);
 		setMultipleHole(multiple_hole);
 		setFreqNew(freq_new);
 		setFinishHardness(finish_hardness);
@@ -38,6 +40,10 @@ function Setting({ username }) {
 	const updateOnlyOld = async() => {
 		await axios.post('/setting/onlyOld', { username, onlyOld });
 	};
+
+	const updateShowFirst = async() => {
+		await axios.post('/setting/showFirst', { username, showFirst });
+	}
 
 	const updateMultipleHole = async() => {
 		await axios.post('/setting/multipleHole', { username, multipleHole });
@@ -121,6 +127,15 @@ function Setting({ username }) {
 						} label='只學舊單字' />
 						<FormControlLabel control={
 							<Switch
+								checked={showFirst}
+								onChange={ (e) => {
+									setShowFirst(e.target.checked)
+									updateShowFirst();
+								}}
+							/>
+						} label='顯示首字提示' />
+						<FormControlLabel control={
+							<Switch
 								checked={multipleHole}
 								onChange={ (e) => {
 									setMultipleHole(e.target.checked)
@@ -144,7 +159,6 @@ function Setting({ username }) {
 						
 						<Slider
 							min={-50} max={50}
-							defaultValue={0}
 							value={freqNew}
 							onChange={ (e, value) => {
 								setFreqNew(value);
@@ -163,7 +177,6 @@ function Setting({ username }) {
 						</Stack>
 						<Slider
 							min={-50} max={50}
-							defaultValue={0}
 							value={finishHardness}
 							onChange={ (e, value) => {
 								setFinishHardness(value);

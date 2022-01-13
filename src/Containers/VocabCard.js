@@ -27,6 +27,7 @@ function VocabCard({ username }) {
 
   /* TextField Related */
   const [userAnswer, setUserAnswer] = useState([]);
+  const [showFirst, setShowFirst] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [correct, setCorrect] = useState([]);
   const [incorrect, setIncorrect] = useState([]);
@@ -38,7 +39,7 @@ function VocabCard({ username }) {
   const getCard = async () => {
 
     const {
-			data: { card, holes, score, newcard },
+			data: { card, holes, score, newcard, show_first },
 		} = await axios.get('/card/get-card', {params: { username }});
 
     setCard(card);
@@ -54,6 +55,7 @@ function VocabCard({ username }) {
     
     setHoles(holes);
     setNewCard(newcard);
+    setShowFirst(show_first);
     setProgress(score * 0.1);
     setBuffer(score * 0.1);
 
@@ -155,6 +157,7 @@ function VocabCard({ username }) {
       <Card raised sx={{  color: 'primary.main', 
                           border: 1, 
                           overflow: 'auto',
+                          mb: 7, 
                           width: { xs: 1.0, sm: 400, md: 600 } }}>
         <CardContent>
           <Typography variant='h7'>
@@ -176,7 +179,7 @@ function VocabCard({ username }) {
                 <TextField 
                   id={i.toString()}
                   value={userAnswer[i]}
-                  placeholder={showHint ? element : ''}
+                  placeholder={showHint ? element : showFirst ? element[0] : ''}
                   onChange={(e) => typeUserAnswer(e.target.value, i)}
                   onKeyDown={(e) => handleEnter(e, i)}
                   /* styles */

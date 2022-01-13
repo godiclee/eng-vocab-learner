@@ -1,5 +1,6 @@
 import { useState, useContext } from 'react';
-import { BottomNavigation, BottomNavigationAction, Box, Button } from '@mui/material';
+import { BottomNavigation, BottomNavigationAction, Button, 
+	Stack, Typography } from '@mui/material';
 import PlayCircleIcons from '@mui/icons-material/PlayCircle';
 import SettingsIcon  from '@mui/icons-material/Settings';
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
@@ -15,10 +16,15 @@ function Main({ signOut }) {
 
 	return (
 		<Wrapper>
-			歡迎回來 {user.username}，上次登入時間 {' '}
-			{new Date(user.last_login).toDateString()}{' '}
-			{new Date(user.last_login).toLocaleTimeString()}
-			<Button variant='contained' onClick={signOut}>登出</Button>
+			<Stack direction='row' spacing={1}>
+				<Typography sx={{fontSize: 12}}>
+					歡迎回來 {user.username}，上次登入 {' '}
+					{new Date(user.last_login).toDateString()}{' '}
+					{new Date(user.last_login).toLocaleTimeString()}	
+				</Typography>
+				<Button variant='contained' size='small' onClick={signOut}>登出</Button>
+			</Stack>
+			
 			{ page === '練習' ? 
 				<VocabCard username={user.username} /> :
 				page === '進度' ?

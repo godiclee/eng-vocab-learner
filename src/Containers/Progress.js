@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import { Button, Card, CardContent, Grid, LinearProgress, 
+import { Button, Card, CardContent, DataGrid, LinearProgress, 
 	TextField, Typography  } from '@mui/material';
 
 import axios from '../api'
@@ -30,6 +30,14 @@ function Progress({ username }) {
 					color='common.black'
 				>進度</Typography>
 			</CardContent>
+			{/*
+			<DataGrid
+				rows={rows}
+				columns={columns}
+				pageSize={5}
+				rowsPerPageOptions={[5]}
+				checkboxSelection
+			/>*/}
 		</Card>
 	);
 };

@@ -35,6 +35,7 @@ const UserSchema = new Schema({
 	level: Number,
 	only_new: Boolean,
 	only_old: Boolean,
+	show_first: Boolean,
 	multiple_hole: Boolean,
 	freq_of_new: Number,
 	finish_hardness: Number,
