@@ -1,6 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Button, ButtonGroup, Card, CardContent,
-  Divider, LinearProgress, Stack, TextField  } from '@mui/material';
+
+import { Button, Card, CardContent, Grid, LinearProgress, 
+  TextField, Typography  } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
+import SkipNextIcon from '@mui/icons-material/SkipNext';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 import axios from '../api'
 
 function VocabCard({ username }) {
@@ -107,9 +113,6 @@ function VocabCard({ username }) {
       setTimeout(() => { 
         getCard(); 
       }, 500);
-
-
-      
     } else {
       setTimeout(() => { 
         setUserAnswer(Array(card.holes.length).fill('')); 
@@ -135,13 +138,25 @@ function VocabCard({ username }) {
     setUserAnswer(userAnswer => userAnswer.slice(0, i).concat([value], userAnswer.slice(i+1)));
   };
 
+  const deleteCard = async () => {
+    if (window.confirm('你確定要刪除這張卡片嗎? 請只在這張卡片有誤時刪除')) {
+      const {
+        data: { msg },
+      } = await axios.post('/card/delete-card', { username, card, newCard });
+      getCard();
+    }
+  };
+
   /* card is rendered when first loaded */
   useEffect(() => {
     getCard();
   }, []);
   
   return (
-      <Card raised sx={{ color: 'primary.main', border: 1, width: 750, height: 500 }}>
+      <Card raised sx={{  color: 'primary.main', 
+                          border: 1, 
+                          overflow: 'auto',
+                          width: { xs: 1.0, sm: 400, md: 600 } }}>
         <CardContent>
           Level {level} {newCard ? 'New Card' : ''}
           <LinearProgress 
@@ -151,7 +166,7 @@ function VocabCard({ username }) {
             color={alreadyCorrect ? 'success' : alreadyWrong ? 'warning' : 'secondary'}
           />
         </CardContent>
-        <CardContent>
+        <CardContent sx={{color: 'text.primary'}}>
           {engsen.map((element, index) => {
             const i = holes.indexOf(index); /* i is the position in holes */
             return holes.includes(index) ? 
@@ -174,26 +189,23 @@ function VocabCard({ username }) {
               </> : element + ' ';
           })}
         </CardContent>
-        <CardContent>{chisen}</CardContent>
-        <CardContent></CardContent> 
-        <CardContent>{pos}</CardContent>
-        <CardContent>{chi}</CardContent>
-        <CardContent>{eng}</CardContent>
-        <CardContent />
+        <CardContent sx={{color: 'text.primary'}}>{chisen}</CardContent>
+        <CardContent>
+          <Typography>({pos}) {chi}</Typography>
+          <Typography sx={{color: 'text.secondary', fontSize: 10}}>{eng}</Typography>
+        </CardContent>
         
-        <Stack direction='row' spacing={3} divider={<Divider orientation='vertical' />}>
-            <ButtonGroup>
-              <Button variant='contained'>減少出現 (尚未完成)</Button>
-              <Button variant='contained'>增加出現 (尚未完成)</Button>
-              <Button variant='contained'>我不想再看到它了! (尚未完成)</Button>
-            </ButtonGroup>
-            <ButtonGroup>
-              <Button variant='contained' onClick={getCard}>下一題(略過)</Button>
-              <Button variant='contained' onClick={submitAnswer}>送出</Button>
-              <Button variant='contained' onClick={updateCorrect}>正確(測試用)</Button>
-              <Button variant='contained' onClick={updateIncorrect}>錯誤(測試用)</Button>
-            </ButtonGroup>
-        </Stack>
+        <Grid container justifyContent="center">
+          <Button variant='contained' 
+            startIcon={<SendIcon />}
+            onClick={submitAnswer}>送出</Button>
+          <Button variant='outlined' 
+            startIcon={<SkipNextIcon />}
+            onClick={getCard}>略過</Button>
+          <IconButton aria-label="delete">
+            <DeleteIcon onClick={deleteCard} />
+          </IconButton>
+        </Grid>
       </Card>
   );
 };

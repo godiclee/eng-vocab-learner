@@ -10,12 +10,10 @@ headers.update(
 )
 
 result = []
-level = 5
+level = 1
 
 with open("level" + str(level) + ".txt", 'r') as f:
     for i, line in enumerate(f.readlines()):
-        if i < 0:
-            continue
         word = line.strip()
 
         response = requests.get(
@@ -38,7 +36,7 @@ with open("level" + str(level) + ".txt", 'r') as f:
         for meaning in upper_level.find_all("div", {"class": "dsense"}):
             eng_meaning = meaning.find_all("div", {"class": "ddef_d"})[0].text
             chi_meaning = meaning.find_all("div", {"class": "ddef_b"})[0].find_all("span")[0].text
-
+            count = 0
             for sentence in meaning.find_all("div", {"class": "ddef_b"})[0].find_all("div", {"class": "examp"}):
                 eng_sentence_raw = sentence.find("span", {"class": ["eg", "deg"]})
                 eng_sentence = eng_sentence_raw.text
@@ -47,7 +45,7 @@ with open("level" + str(level) + ".txt", 'r') as f:
                 except:
                     print('只有英文沒有中文句子')
                     continue
-                if len(eng_sentence.split()) == 1: # discard short sentence
+                if len(eng_sentence.split()) <= 2: # discard short sentence
                     continue
                 
                 eng_sentence_list = eng_sentence.split()
@@ -67,6 +65,9 @@ with open("level" + str(level) + ".txt", 'r') as f:
                         break
                 else:
                     continue
+                count += 1
+                if count > 1:
+                    break
 
                 new_card = {"word": word, "chi": chi_meaning, "eng": eng_meaning, "pos": pos, 
                         "chisen": chi_sentence, "engsen": ' '.join(eng_sentence_list_1), "level": level, "hole" : index}
@@ -79,7 +80,7 @@ with open("level" + str(level) + ".txt", 'r') as f:
                     bold = ' '.join(bold).split(' ')
                     for b in bold:
                         for index, i in enumerate(eng_sentence_list_1):
-                            if b == i:
+                            if b == i and not '/' in b:
                                 holes.append(index)
                                 break
                         else:
@@ -89,9 +90,9 @@ with open("level" + str(level) + ".txt", 'r') as f:
 
                 #print(new_card)
                 result.append(new_card)
-        print(len(result))
-        if len(result) >= 20:
-            break
+print(len(result))
+        #if len(result) >= 20:
+        #    break
 
 import json
 with open("level" + str(level) + '.json', 'w') as f:

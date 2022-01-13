@@ -1,10 +1,16 @@
-import { useContext } from 'react';
-import Button from '@mui/material/Button'
-import VocabCard from './VocabCard.js'
-import Wrapper from '../Components/Wrapper'
+import { useState, useContext } from 'react';
+import { BottomNavigation, BottomNavigationAction, Box, Button } from '@mui/material';
+import PlayCircleIcons from '@mui/icons-material/PlayCircle';
+import SettingsIcon  from '@mui/icons-material/Settings';
+import QueryStatsIcon from '@mui/icons-material/QueryStats';
+import VocabCard from './VocabCard.js';
+import Setting from './Setting.js';
+import Wrapper from '../Components/Wrapper';
 import { UserContext } from '../App';
 
+
 function Main({ signOut }) {
+	const [page, setPage] = useState('練習');
 	const user = useContext(UserContext);
 
 	return (
@@ -13,7 +19,28 @@ function Main({ signOut }) {
 			{new Date(user.last_login).toDateString()}{' '}
 			{new Date(user.last_login).toLocaleTimeString()}
 			<Button variant='contained' onClick={signOut}>登出</Button>
-			<VocabCard username={user.username}></VocabCard>
+			{ page === '練習' ? 
+				<VocabCard username={user.username} /> :
+				page === '進度' ?
+					'進度' : 
+				<Setting username={user.username} />
+			}
+			<Box sx={{ width: { xs: 1.0, sm: 400, md: 600 } }}>
+				<BottomNavigation showLabels>
+					<BottomNavigationAction 
+						label='練習' 
+						icon={<PlayCircleIcons />}
+						onClick={() => setPage('練習')} />
+					<BottomNavigationAction 
+						label='進度'
+						icon={<QueryStatsIcon />}
+						onClick={() => setPage('進度')} />
+					<BottomNavigationAction 
+						label='設定' 
+						icon={<SettingsIcon />}
+						onClick={() => setPage('設定')} />
+				</BottomNavigation>
+			</Box>
 		</Wrapper>
 	)
 };

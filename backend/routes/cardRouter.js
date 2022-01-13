@@ -27,7 +27,7 @@ router.get('/get-card', async (req, res) => {
 	if (Math.random() < new_prob || user.learned_but_not_skilled === 0) {
 		console.log('new card');
 		let newCard = await Card.aggregate([
-			{ $match: { level: { $gte: user.level },
+			{ $match: { level: { $eq: user.level },
 						_id: { $in: user.not_learned_cards } } },
 			{ $sample: { size: 1 } },
 		])
@@ -206,6 +206,26 @@ router.post('/incorrect', async (req, res) => {
 
 		res.json({ score: userCard.score });
 	}
+});
+
+router.post('/delete-card', async (req, res) => {
+	const card = req.body.card;
+	const newCard = req.body.newCard
+	let user = await User.findOne({'username' : req.body.username});
+	if (newCard) {
+		user.not_learned -= 1;
+		user.not_learned_cards = user.not_learned_cards.filter((id) => id != card._id);
+		await user.save();
+	} else {
+		let userCard = await User_Card.findOne({
+			'userId' : user._id,
+			'cardId' : card._id
+		});
+		user.learned_but_not_skilled -= 1;
+		await user.save();
+		await User_Card.deleteOne({'_id' : userCard._id});
+	}
+	res.json({ msg: 'success' });
 });
 
 export default router;
