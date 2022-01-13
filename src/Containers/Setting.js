@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 
 import { Card, CardContent, FormControlLabel, FormGroup,
-	Grid, Slider, Switch, Typography } from '@mui/material';
+	Grid, Slider, Stack, Switch, Tooltip, Typography } from '@mui/material';
+import InfoIcon from '@mui/icons-material/Info';
 
 import axios from '../api'
 
@@ -126,13 +127,21 @@ function Setting({ username }) {
 									updateMultipleHole();
 								}}
 							/>
+							
 						} label='一句多洞模式' />
+						
 					</FormGroup>
 				</Grid>
 
 				<Grid item container xs={6} justifyContent="center" direction='column'>
 					<Grid item>
-						<Typography>新單字頻率</Typography>
+						<Stack direction='row' spacing={1}>
+							<Typography>新單字頻率</Typography>
+							<Tooltip title="一下子學太多新生字小心大腦壞掉噢" placement="right">
+								<InfoIcon color='secondary'></InfoIcon>
+							</Tooltip>
+						</Stack>
+						
 						<Slider
 							min={-50} max={50}
 							defaultValue={0}
@@ -146,7 +155,12 @@ function Setting({ username }) {
 					</Grid>
 
 					<Grid item>
-						<Typography>完成難度</Typography>
+						<Stack direction='row' spacing={1}>
+							<Typography>完成難度</Typography>
+							<Tooltip title='難度愈高，不熟的單字會重複愈多遍才消失！' placement='right'>
+								<InfoIcon color='secondary'></InfoIcon>
+							</Tooltip>
+						</Stack>
 						<Slider
 							min={-50} max={50}
 							defaultValue={0}

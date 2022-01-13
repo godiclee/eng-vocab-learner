@@ -26,7 +26,7 @@ function Main({ signOut }) {
 				<Setting username={user.username} />
 			}
 			<Box sx={{ width: { xs: 1.0, sm: 400, md: 600 } }}>
-				<BottomNavigation showLabels>
+				<BottomNavigation showLabels sx={{ bottom: 0, width: 1.0}}>
 					<BottomNavigationAction 
 						label='練習' 
 						icon={<PlayCircleIcons />}
