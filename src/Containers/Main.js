@@ -25,22 +25,20 @@ function Main({ signOut }) {
 				<Progress username={user.username} /> : 
 				<Setting username={user.username} />
 			}
-			<Box sx={{ width: { xs: 1.0, sm: 400, md: 600 } }}>
-				<BottomNavigation showLabels sx={{ bottom: 0, width: 1.0}}>
-					<BottomNavigationAction 
-						label='練習' 
-						icon={<PlayCircleIcons />}
-						onClick={() => setPage('練習')} />
-					<BottomNavigationAction 
-						label='進度'
-						icon={<QueryStatsIcon />}
-						onClick={() => setPage('進度')} />
-					<BottomNavigationAction 
-						label='設定' 
-						icon={<SettingsIcon />}
-						onClick={() => setPage('設定')} />
-				</BottomNavigation>
-			</Box>
+			<BottomNavigation showLabels sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }}>
+				<BottomNavigationAction 
+					label='練習' 
+					icon={<PlayCircleIcons />}
+					onClick={() => setPage('練習')} />
+				<BottomNavigationAction 
+					label='進度'
+					icon={<QueryStatsIcon />}
+					onClick={() => setPage('進度')} />
+				<BottomNavigationAction 
+					label='設定' 
+					icon={<SettingsIcon />}
+					onClick={() => setPage('設定')} />
+			</BottomNavigation>
 		</Wrapper>
 	)
 };
