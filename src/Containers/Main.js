@@ -4,10 +4,10 @@ import PlayCircleIcons from '@mui/icons-material/PlayCircle';
 import SettingsIcon  from '@mui/icons-material/Settings';
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import VocabCard from './VocabCard.js';
+import Progress from './Progress.js';
 import Setting from './Setting.js';
 import Wrapper from '../Components/Wrapper';
 import { UserContext } from '../App';
-
 
 function Main({ signOut }) {
 	const [page, setPage] = useState('練習');
@@ -22,7 +22,7 @@ function Main({ signOut }) {
 			{ page === '練習' ? 
 				<VocabCard username={user.username} /> :
 				page === '進度' ?
-					'進度' : 
+				<Progress username={user.username} /> : 
 				<Setting username={user.username} />
 			}
 			<Box sx={{ width: { xs: 1.0, sm: 400, md: 600 } }}>

@@ -50,8 +50,8 @@ router.post('/login', async (req, res) => {
 	const success = bcrypt.compareSync(req.body.password, user.password_hash);
 	const last_login = user.last_login;
 	user.last_login = Date();
-	await user.save();
-	res.json({ success: success, user: req.body.username, last_login: last_login });
+	await User.updateOne({'username' : req.body.username}, {'last_login' : Date() });
+	res.json({ success: success, user: user, last_login: last_login });
 });
 
 export default router;

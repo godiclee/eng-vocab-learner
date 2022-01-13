@@ -20,10 +20,13 @@ app.listen(port, () =>
 
 import loginRouter from './backend/routes/loginRouter.js';
 import cardRouter from './backend/routes/cardRouter.js';
+import progressRouter from './backend/routes/progressRouter.js';
 import settingRouter from './backend/routes/settingRouter.js';
+
 
 app.use('/api/login', loginRouter);
 app.use('/api/card', cardRouter);
+app.use('/api/progress', progressRouter);
 app.use('/api/setting', settingRouter);
 
 import path from "path";

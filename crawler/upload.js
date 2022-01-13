@@ -1,4 +1,4 @@
-import data from './level1.json'
+import data from './level6.json'
 import { strict as assert } from 'assert'
 
 

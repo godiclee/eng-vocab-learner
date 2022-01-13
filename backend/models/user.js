@@ -40,10 +40,10 @@ const UserSchema = new Schema({
 	finish_hardness: Number,
 	
 	/* cards */
-	not_learned_cards: [Schema.Types.ObjectId],
 	skilled_cards: [Schema.Types.ObjectId],
+	not_learned_cards: [Schema.Types.ObjectId],
+	/*learned_but_not_skilled_cards: [Schema.Types.ObjectId],*/
 	black_cards: [Schema.Types.ObjectId],
-	/*learned_but_not_skilled_cards: [User_Card_Schema],*/
 })
 
 const User = mongoose.model('User', UserSchema);

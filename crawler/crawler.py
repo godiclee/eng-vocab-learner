@@ -90,10 +90,10 @@ with open("level" + str(level) + ".txt", 'r') as f:
 
                 #print(new_card)
                 result.append(new_card)
-print(len(result))
-        #if len(result) >= 20:
-        #    break
 
+        if len(result) >= 20:
+            break
+print(len(result))
 import json
 with open("level" + str(level) + '.json', 'w') as f:
     json.dump(result, f)

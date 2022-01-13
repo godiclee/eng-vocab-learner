@@ -5,10 +5,27 @@ import { User, User_Card, Daily_Stats } from '../models/user.js'
 const router = express.Router()
 
 router.get('/get-card', async (req, res) => {
-	const user = await User.findOne({'username' : req.query.username});
+	const user = await User.findOne({ 'username' : req.query.username },
+		{
+			'_id' : 1,
+			'learned_but_not_skilled' : 1,
+			'level' : 1,
+			'not_learned_cards' : 1,
+			'only_old' : 1,
+			'only_new' : 1,
+			'multiple_hole' : 1,
+			'freq_of_new' : 1
+		}
+	);
+
 	let date = new Date();
 	date.setHours(0, 0, 0, 0);
-	let daily_stats = await Daily_Stats.findOne({ 'userId' : user._id, 'date' : date });
+	let daily_stats = await Daily_Stats.findOne(
+		{ 
+			'userId' : user._id, 
+			'date' : date 
+		}
+	);
 	if (!daily_stats) {
 		daily_stats = new Daily_Stats({
 			userId: user._id,
@@ -22,9 +39,16 @@ router.get('/get-card', async (req, res) => {
 		});
 	}
 
-	const new_prob = Math.max(25, 100 - daily_stats.add_old) / (100 + user.learned_but_not_skilled);
+	const numerator_least = 25 + user.freq_of_new * 0.5
+	const numerator_most = 100 + user.freq_of_new
+
+	const new_prob = Math.max(numerator_least, 
+						numerator_most - daily_stats.add_old) / 
+					(100 + user.learned_but_not_skilled);
 	console.log(new_prob);
-	if (Math.random() < new_prob || user.learned_but_not_skilled === 0) {
+	if (user.only_new
+		|| user.learned_but_not_skilled === 0 
+		|| (!user.only_old && Math.random() < new_prob)) {
 		console.log('new card');
 		let newCard = await Card.aggregate([
 			{ $match: { level: { $eq: user.level },
@@ -60,43 +84,28 @@ router.get('/get-card', async (req, res) => {
 		score: oldUserCard[0].score,
 		newcard: false
 	});
-	/*
-	const oldUserCard = await User.aggregate([
-		{ $match: { 'username' : req.query.username }},
-		{ $project: { 'learned_but_not_skilled_cards' : 1 } },
-		{ $unwind: { path: '$learned_but_not_skilled_cards' } },
-		{ $sample: { size: 1 } }
-	])
-	
-			{ $lookup: {
-			from: 'User_Card',
-			localField: 'learned_but_not_skilled_cards.cardId',
-			foreignField: '_id',
-			as: 'learned_but_not_skilled_cards.card'
-		  }
-		},
-	
-	const newCard = new Card({
-		word: 'effect',
-		chi: '效果；影響；結果',
-		eng: 'the result of a particular influence',
-		pos: 'noun',
-		chisen: '核輻射外泄給環境帶來了災難性的影響。',
-		engsen: 'The radiation leak has had a disastrous effect on/upon the environment.',
-		level: 1,
-		hole: 7,
-		holes: [7, 8],
-		reported: false,
-	})
-	*/
 });
   
 router.post('/correct', async (req, res) => {
 	const card = req.body.card;
-	let user = await User.findOne({'username' : req.body.username});
+	let user = await User.findOne({ 'username' : req.body.username },
+		{
+			'_id' : 1,
+			'skilled' : 1,
+			'not_learned' : 1,
+			'learned_but_not_skilled' : 1,
+			'finish_hardness' : 1,
+		}
+	);
+	
 	let date = new Date();
 	date.setHours(0, 0, 0, 0);
-	let daily_stats = await Daily_Stats.findOne({ 'userId' : user._id, 'date' : date });
+	let daily_stats = await Daily_Stats.findOne(
+		{ 
+			'userId' : user._id, 
+			'date' : date 
+		}
+	);
 	if (!daily_stats) {
 		daily_stats = new Daily_Stats({
 			userId: user._id,
@@ -111,11 +120,14 @@ router.post('/correct', async (req, res) => {
 	}
 		
 	if (req.body.newCard) {
-		user.skilled += 1;
-		user.not_learned -= 1;
-		user.skilled_cards.push(card._id);
-		user.not_learned_cards = user.not_learned_cards.filter((id) => id != card._id);
-		await user.save();
+		await User.updateOne({'username' : req.body.username},
+			{
+				'skilled' : user.skilled + 1,
+				'not_learned' : user.not_learned - 1,
+				$push: { 'skilled_cards' : card._id },
+				$pull: { 'not_learned_cards' : card._id }
+			}
+		);
 
 		daily_stats.new += 1;
 		daily_stats.skilled += 1;
@@ -128,19 +140,23 @@ router.post('/correct', async (req, res) => {
 			'userId' : user._id,
 			'cardId' : card._id
 		});
-		userCard.score += 150 + 200 * Math.exp(-0.3 * (userCard.time - 1));
+
+		const base_add_score = 150 - user.finish_hardness;
+		const bonus_add_score = 200 - user.finish_hardness * 4;
+		userCard.score += base_add_score + bonus_add_score * Math.exp(-0.3 * (userCard.time - 1));
 		userCard.time += 1;
 
 		daily_stats.old += 1;
 		daily_stats.correct += 1;
 
 		if (userCard.score >= 1000) {
-			user.skilled += 1;
-			user.learned_but_not_skilled -= 1;
-			/*user.learned_but_not_skilled_cards = user.learned_but_not_skilled_cards.filter(
-				(card) => card._id != userCard.cardId
-			)*/
-			await user.save();
+			await user.updateOne({'username' : req.body.username},
+				{
+					'skilled' : user.skilled + 1,
+					'learned_but_not_skilled' : user.learned_but_not_skilled - 1,
+					$push: { 'skilled_cards' : card._id },
+				}
+			);
 			await User_Card.deleteOne({'_id' : userCard._id});
 
 			daily_stats.skilled += 1;
@@ -154,10 +170,23 @@ router.post('/correct', async (req, res) => {
 
 router.post('/incorrect', async (req, res) => {
 	let card = req.body.card;
-	const user = await User.findOne({'username' : req.body.username});
+	const user = await User.findOne({ 'username' : req.body.username },
+		{
+			'_id' : 1,
+			'not_learned' : 1,
+			'learned_but_not_skilled' : 1,
+			'finish_hardness' : 1
+		}
+	);
+
 	let date = new Date();
 	date.setHours(0, 0, 0, 0);
-	let daily_stats = await Daily_Stats.findOne({ 'userId' : user._id, 'date' : date });
+	let daily_stats = await Daily_Stats.findOne(
+		{ 
+			'userId' : user._id, 
+			'date' : date 
+		}
+	);
 	if (!daily_stats) {
 		daily_stats = new Daily_Stats({
 			userId: user._id,
@@ -172,8 +201,6 @@ router.post('/incorrect', async (req, res) => {
 	}
 
 	if (req.body.newCard) {
-		user.not_learned -= 1;
-		user.learned_but_not_skilled += 1;
 		const newUserCard = new User_Card({
 			userId: user._id,
 			cardId: card._id,
@@ -181,9 +208,14 @@ router.post('/incorrect', async (req, res) => {
 			score: 250
 		});
 		await newUserCard.save();
-		/*user.learned_but_not_skilled_cards.push(newUserCard);*/
-		user.not_learned_cards = user.not_learned_cards.filter((id) => id != card._id);
-		await user.save();
+
+		await User.updateOne({'username' : req.body.username},
+			{
+				'not_learned' : user.not_learned - 1,
+				'learned_but_not_skilled' : user.learned_but_not_skilled + 1,
+				'$pull' : { 'not_learned_cards' : card._id }
+			}
+		)
 
 		daily_stats.new += 1;
 		daily_stats.add_old += 1;
@@ -196,7 +228,9 @@ router.post('/incorrect', async (req, res) => {
 			'userId' : user._id,
 			'cardId' : card._id
 		});
-		userCard.score = Math.max(0, userCard.score - 250);
+
+		const single_reduction_score = 250 + user.finish_hardness * 4 
+		userCard.score = Math.max(0, userCard.score - single_reduction_score);
 		userCard.time += 1;
 		await userCard.save();
 
@@ -210,19 +244,32 @@ router.post('/incorrect', async (req, res) => {
 
 router.post('/delete-card', async (req, res) => {
 	const card = req.body.card;
-	const newCard = req.body.newCard
-	let user = await User.findOne({'username' : req.body.username});
-	if (newCard) {
-		user.not_learned -= 1;
-		user.not_learned_cards = user.not_learned_cards.filter((id) => id != card._id);
-		await user.save();
+	
+	const user = await User.findOne({ 'username' : req.body.username },
+		{
+			'_id' : 1,
+			'not_learned' : 1,
+			'learned_but_not_skilled' : 1,
+		}
+	);
+
+	if (req.body.newCard) {
+		await User.updateOne({ 'username' : req.body.username },
+			{
+				'not_learned' : user.not_learned - 1,
+				$pull : { 'not_learned_cards' : card._id }
+			}
+		)
 	} else {
 		let userCard = await User_Card.findOne({
 			'userId' : user._id,
 			'cardId' : card._id
 		});
-		user.learned_but_not_skilled -= 1;
-		await user.save();
+		await User.updateOne({ 'username' : req.body.username },
+			{ 
+				'learned_but_not_skilled' : user.learned_but_not_skilled - 1 
+			}
+		);
 		await User_Card.deleteOne({'_id' : userCard._id});
 	}
 	res.json({ msg: 'success' });

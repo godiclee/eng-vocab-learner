@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import { Card, CardContent, FormControlLabel, FormGroup,
-	Grid, Slider, Stack, Switch, Typography } from '@mui/material';
+	Grid, Slider, Switch, Typography } from '@mui/material';
 
 import axios from '../api'
 
@@ -15,34 +15,56 @@ function Setting({ username }) {
 
 	const getSetting = async () => {
 		const {
-			data: { user },
-		} = await axios.get('/setting', {params: { username }});
-		console.log(user)
-		setLevel(user.level);
-		setOnlyNew(user.only_new);
-		setOnlyOld(user.only_old);
-		setMultipleHole(user.multiple_hole);
-		setFreqNew(user.freq_of_new);
-		setFinishHardness(user.finish_hardness);
+			data: { level, only_new, only_old, multiple_hole, freq_new, finish_hardness },
+		} = await axios.get('/setting/', { params: { username } });
+
+		setLevel(level);
+		setOnlyNew(only_new);
+		setOnlyOld(only_old);
+		setMultipleHole(multiple_hole);
+		setFreqNew(freq_new);
+		setFinishHardness(finish_hardness);
 	};
 
 	const updateLevel = async() => {
 		await axios.post('/setting/level', { username, level });
 	};
 
+	const updateOnlyNew = async() => {
+		await axios.post('/setting/onlyNew', { username, onlyNew });
+	};
+
+	const updateOnlyOld = async() => {
+		await axios.post('/setting/onlyOld', { username, onlyOld });
+	};
+
+	const updateMultipleHole = async() => {
+		await axios.post('/setting/multipleHole', { username, multipleHole });
+	};
+
+	const updateFreqNew = async() => {
+		await axios.post('/setting/freqNew', { username, freqNew });
+	};
+
+	const updateFinishHardness = async() => {
+		await axios.post('/setting/finishHardness', { username, finishHardness });
+	};
+
 	useEffect(() => {
-		console.log('reach')
 		getSetting();
+		// eslint-disable-next-line
 	}, []);
 
-
-
 	return (
-		<Card raised sx={{  color: 'primary.main', 
-		border: 1, 
-		overflow: 'auto',
-		width: { xs: 1.0, sm: 400, md: 600 } }}>
-			
+		<Card 
+			raised 
+			sx={{ 
+				color: 'primary.main', 
+				border: 1, 
+				overflow: 'auto',
+				width: { xs: 1.0, sm: 400, md: 600 } 
+			}}
+		>
 			<CardContent>
 				<Typography 
 					variant='h5' 
@@ -52,7 +74,7 @@ function Setting({ username }) {
 			</CardContent>
 			
 			<CardContent>
-				<Typography >難度(Level)</Typography>
+				<Typography>難度(Level)</Typography>
 				<Grid container justifyContent='center'>
 					<Slider
 						track={false}
@@ -76,51 +98,71 @@ function Setting({ username }) {
 			<Grid container spacing={1}>
 				<Grid item container xs={6} justifyContent="center">
 					<FormGroup>
-						<FormControlLabel control={<Switch />} label='只學新單字' />
-						<FormControlLabel control={<Switch />} label='只學舊單字' />
-						<FormControlLabel control={<Switch />} label='一句多洞模式' />
+						<FormControlLabel control={
+							<Switch 
+								checked={onlyNew}
+								disabled={onlyOld}
+								onChange={ (e) => {
+									setOnlyNew(e.target.checked);
+									updateOnlyNew();
+								}}
+							/>
+						} label='只學新單字' />
+						<FormControlLabel control={
+							<Switch 
+								checked={onlyOld}
+								disabled={onlyNew}
+								onChange={ (e) => {
+									setOnlyOld(e.target.checked);
+									updateOnlyOld();
+								}}
+							/>
+						} label='只學舊單字' />
+						<FormControlLabel control={
+							<Switch
+								checked={multipleHole}
+								onChange={ (e) => {
+									setMultipleHole(e.target.checked)
+									updateMultipleHole();
+								}}
+							/>
+						} label='一句多洞模式' />
 					</FormGroup>
 				</Grid>
 
-				<Grid item container xs={6} justifyContent="center">
-					<Stack>
-						<Stack>
-							<Typography>新單字頻率</Typography>
-							<Slider
-								track={false}
-								min={-100} max={100}
-								defaultValue={0}
-								sx={{ width: { xs: 0.375, sm: 150, md: 225 } }}
-							/>
-						</Stack>
-					</Stack>
+				<Grid item container xs={6} justifyContent="center" direction='column'>
+					<Grid item>
+						<Typography>新單字頻率</Typography>
+						<Slider
+							min={-50} max={50}
+							defaultValue={0}
+							value={freqNew}
+							onChange={ (e, value) => {
+								setFreqNew(value);
+								updateFreqNew();
+							}}
+							sx={{ width: { xs: 0.75, sm: 150, md: 225 } }}
+						/>
+					</Grid>
 
-					<Stack>
-						<Stack>
-							<Typography>完成難度</Typography>
-							<Slider
-								track={false}
-								min={-100} max={100}
-								defaultValue={0}
-								sx={{ width: { xs: 0.375, sm: 150, md: 225 } }}
-							/>
-						</Stack>
-					</Stack>
+					<Grid item>
+						<Typography>完成難度</Typography>
+						<Slider
+							min={-50} max={50}
+							defaultValue={0}
+							value={finishHardness}
+							onChange={ (e, value) => {
+								setFinishHardness(value);
+								updateFinishHardness();
+							}}
+							sx={{ width: { xs: 0.75, sm: 150, md: 225 } }}
+						/>
+					</Grid>
 				</Grid>
 			</Grid>
-			
-			
-
-
-			<CardContent>
-				
-			</CardContent>
-
-			
-			
+			<CardContent />	
 		</Card>
 	);
-
 };
 
 export default Setting;

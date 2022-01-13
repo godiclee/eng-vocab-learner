@@ -112,12 +112,12 @@ function VocabCard({ username }) {
       
       setTimeout(() => { 
         getCard(); 
-      }, 500);
+      }, 1);
     } else {
       setTimeout(() => { 
         setUserAnswer(Array(card.holes.length).fill('')); 
         setShowHint(true);
-      }, 500);
+      }, 1);
     }
   }
 
@@ -140,9 +140,7 @@ function VocabCard({ username }) {
 
   const deleteCard = async () => {
     if (window.confirm('你確定要刪除這張卡片嗎? 請只在這張卡片有誤時刪除')) {
-      const {
-        data: { msg },
-      } = await axios.post('/card/delete-card', { username, card, newCard });
+      await axios.post('/card/delete-card', { username, card, newCard });
       getCard();
     }
   };
@@ -150,6 +148,7 @@ function VocabCard({ username }) {
   /* card is rendered when first loaded */
   useEffect(() => {
     getCard();
+    // eslint-disable-next-line
   }, []);
   
   return (
@@ -158,7 +157,10 @@ function VocabCard({ username }) {
                           overflow: 'auto',
                           width: { xs: 1.0, sm: 400, md: 600 } }}>
         <CardContent>
-          Level {level} {newCard ? 'New Card' : ''}
+          <Typography variant='h7'>
+            Level {level} {newCard ? 'New Card' : ''}
+          </Typography>
+          
           <LinearProgress 
             variant="buffer" 
             value={progress} 
@@ -180,22 +182,29 @@ function VocabCard({ username }) {
                   /* styles */
                   focused
                   variant='filled'
-                  inputProps={{style: {fontSize: '10px', fontFamily: 'Monospace'}}}
-                  sx={{ fontFamily: 'Monospace', width: `${28 + 6.2*element.length}px` }} 
+                  inputProps={{style: {fontSize: '20px', fontFamily: 'Monospace', padding: 5}}}
+                  sx={{ fontFamily: 'Monospace', width: `${10 + 12.4*element.length}px` }} 
                     
                   color={correct[i] ? 'success' 
                     : incorrect[i] ? 'warning' : 'primary'}
                 /> {' '}
-              </> : element + ' ';
+              </> : 
+              <Typography display='inline' variant='h5'>
+                {element + ' '}
+              </Typography>
           })}
         </CardContent>
-        <CardContent sx={{color: 'text.primary'}}>{chisen}</CardContent>
+        <CardContent sx={{color: 'text.primary'}}>
+          <Typography variant='h6'>
+            {chisen}
+          </Typography>
+        </CardContent>
         <CardContent>
-          <Typography>({pos}) {chi}</Typography>
-          <Typography sx={{color: 'text.secondary', fontSize: 10}}>{eng}</Typography>
+          <Typography variant='h6'>({pos}) {chi}</Typography>
+          <Typography sx={{color: 'text.secondary', fontSize: 12}}>{eng}</Typography>
         </CardContent>
         
-        <Grid container justifyContent="center">
+        <Grid container justifyContent='center'>
           <Button variant='contained' 
             startIcon={<SendIcon />}
             onClick={submitAnswer}>送出</Button>
