@@ -9,6 +9,7 @@ router.get('/', async (req, res) => {
 			'level' : 1,
 			'only_new' : 1,
 			'only_old' : 1,
+			'show_first' : 1,
 			'multiple_hole' : 1,
 			'freq_of_new' : 1,
 			'finish_hardness' : 1
@@ -18,6 +19,7 @@ router.get('/', async (req, res) => {
 		level: user.level, 
 		only_new: user.only_new,
 		only_old: user.only_old,
+		show_first: user.show_first,
 		multiple_hole: user.multiple_hole,
 		freq_new: user.freq_of_new,
 		finish_hardness: user.finish_hardness
