@@ -97,7 +97,7 @@ function Setting({ username }) {
 								{value: 3, label: 'Level3'},
 								{value: 4, label: 'Level4'},
 								{value: 5, label: 'Level5'},
-								{value: 6, label: 'Level6'},]}
+								{value: 6, label: 'Level6'}]}
 					/>	
 				</Grid>
 			</CardContent>
@@ -148,7 +148,7 @@ function Setting({ username }) {
 					</FormGroup>
 				</Grid>
 
-				<Grid item container xs={6} justifyContent="center" direction='column'>
+				<Grid item container xs={6} justifyContent='center' direction='column'>
 					<Grid item>
 						<Stack direction='row' spacing={1}>
 							<Typography>新單字頻率</Typography>

@@ -67,7 +67,8 @@ function VocabCard({ username }) {
     setIncorrect(Array(card.holes.length).fill(0));
 
     /* Focus on first TextField */
-    document.getElementById('0').focus();
+    if (holes.length)
+      document.getElementById('0').focus();
   };
 
   const updateCorrect = async () => {
@@ -111,10 +112,9 @@ function VocabCard({ username }) {
         setAlreadyCorrect(true);
         updateCorrect();
       }
-      
       setTimeout(() => { 
         getCard(); 
-      }, 1);
+      }, 250);
     } else {
       setTimeout(() => { 
         setUserAnswer(Array(card.holes.length).fill('')); 
@@ -210,11 +210,12 @@ function VocabCard({ username }) {
         <Grid container justifyContent='center'>
           <Button variant='contained' 
             startIcon={<SendIcon />}
+            disabled={!holes.length}
             onClick={submitAnswer}>送出</Button>
           <Button variant='outlined' 
             startIcon={<SkipNextIcon />}
             onClick={getCard}>略過</Button>
-          <IconButton aria-label="delete">
+          <IconButton aria-label="delete" disabled={!holes.length}>
             <DeleteIcon onClick={deleteCard} />
           </IconButton>
         </Grid>

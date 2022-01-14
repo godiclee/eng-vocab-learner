@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Divider, Stack, TextField } from '@mui/material';
+import { Button, Divider, Stack, TextField, Typography } from '@mui/material';
 import Register from '../Containers/Register'
 import axios from '../api.js';
 
@@ -48,7 +48,7 @@ function Signin({ signIn }) {
 				<Register clickReturnButton={clickReturnButton} /> 
 				: 
 				<>
-					歡迎使用天堂英文單字訓練程式
+					<Typography variant='h6' sx={{ mb : 1 }}>歡迎使用天堂英文單字訓練程式</Typography>
 
 					<Stack direction='column' spacing={1}>
 						<TextField label='用戶名稱' onChange={(e) => setUsername(e.target.value)}/>

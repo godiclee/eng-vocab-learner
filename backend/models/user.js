@@ -12,6 +12,14 @@ const Daily_Stats_Schema = new Schema({
 	correct: Number,
 	incorrect: Number	
 });
+
+const Level_Stats_Schema = new Schema({
+	userId: Schema.Types.ObjectId,
+	level: Number,
+	skilled: Number,
+	not_learned: Number,
+	learned_but_not_skilled: Number,
+});
 	
 const User_Card_Schema = new Schema({
 	userId: Schema.Types.ObjectId,
@@ -50,5 +58,6 @@ const UserSchema = new Schema({
 const User = mongoose.model('User', UserSchema);
 const User_Card = mongoose.model('User_Card', User_Card_Schema);
 const Daily_Stats = mongoose.model('Daily_Stats', Daily_Stats_Schema);
+const Level_Stats = mongoose.model('Level_Stats', Level_Stats_Schema);
 
-export { User, User_Card, Daily_Stats };
+export { User, User_Card, Daily_Stats, Level_Stats };

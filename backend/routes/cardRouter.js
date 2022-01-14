@@ -1,6 +1,6 @@
 import express from 'express'
 import Card from '../models/card.js'
-import { User, User_Card, Daily_Stats } from '../models/user.js'
+import { User, User_Card, Daily_Stats, Level_Stats } from '../models/user.js'
 
 const router = express.Router()
 
@@ -77,7 +77,16 @@ router.get('/get-card', async (req, res) => {
 		{ $match: { 'userId': user._id } },
 		{ $sample: { size: 1 } },
 	])
-	
+	if (!oldUserCard.length) {
+		const noMoreCard = new Card({
+			engsen: '沒有舊的生字卡了! 有兩個可能你會到達這裏!!!!!!!!!!!!! \
+				1: 你已經記熟對應等級的所有卡片，請更改等級!!!!!! \
+				2: 你在設置設定只學舊單字了，請更改等級!!!!!!!!!!!!!! \
+				嗯還有一個可能是你已經完成所有卡片，但我其實不太相信有人可以完成...'
+		});
+		res.json({ card: noMoreCard, holes: [] });
+		return;
+	}
 	const oldCard = await Card.find({ '_id': oldUserCard[0].cardId });
 	
 	res.json({ 
@@ -137,6 +146,16 @@ router.post('/correct', async (req, res) => {
 		daily_stats.correct += 1;
 		await daily_stats.save(); 
 
+		let level_stats = await Level_Stats.findOne( 
+			{ 
+				'userId' : user._id, 
+				'level' : card.level 
+			}
+		);
+		level_stats.skilled += 1;
+		level_stats.not_learned -= 1;
+		await level_stats.save();
+
 		res.json({ score: 1000 });
 	} else {
 		let userCard = await User_Card.findOne({
@@ -163,7 +182,18 @@ router.post('/correct', async (req, res) => {
 			await User_Card.deleteOne({'_id' : userCard._id});
 
 			daily_stats.skilled += 1;
-		} else{
+
+			let level_stats = await Level_Stats.findOne( 
+				{ 
+					'userId' : user._id, 
+					'level' : card.level 
+				}
+			);
+			level_stats.skilled += 1;
+			level_stats.learned_but_not_skilled -= 1;
+			await level_stats.save();
+
+		} else {
 			await daily_stats.save(); 
 			await userCard.save();
 		}
@@ -225,6 +255,16 @@ router.post('/incorrect', async (req, res) => {
 		daily_stats.incorrect += 1;
 		await daily_stats.save(); 
 
+		let level_stats = await Level_Stats.findOne( 
+			{ 
+				'userId' : user._id, 
+				'level' : card.level 
+			}
+		);
+		level_stats.not_learned -= 1;
+		level_stats.learned_but_not_skilled += 1;
+		await level_stats.save();
+
 		res.json({ score: 250 });
 	} else {
 		let userCard = await User_Card.findOne({
@@ -263,6 +303,14 @@ router.post('/delete-card', async (req, res) => {
 				$pull : { 'not_learned_cards' : card._id }
 			}
 		)
+		await Level_Stats.updateOne( 
+			{ 
+				'userId' : user._id, 
+				'level' : card.level 
+			},
+			{ $inc: { 'not_learned' : -1 } }
+		);
+		
 	} else {
 		let userCard = await User_Card.findOne({
 			'userId' : user._id,
