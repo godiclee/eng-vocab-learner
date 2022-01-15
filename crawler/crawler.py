@@ -91,56 +91,9 @@ with open("level" + str(level) + ".txt", 'r') as f:
                 #print(new_card)
                 result.append(new_card)
 
-        if len(result) >= 20:
-            break
+
 print(len(result))
 import json
 with open("level" + str(level) + '.json', 'w') as f:
     json.dump(result, f)
-                
-# Level 5                  
-# acknowledgement ==>  acknowledgment !!!
-# bid --> bade QQ
-# bound -- (duty)-bound
-# browse 被引號包起來？？？
-# cling --> clung QQ
-# continental --> continent
-# crocodile --> crocodile-infested
-# customs --> custom !!!
-# dwell --> dwelt !!!
-# endeavor --> endeavouring!!!
-# mechanics --> mechanic !!!
-# odor --> odour !!!
-# orient --> orientate !!!
-# oversleep --> overslept
-# parlor --> parlour !!
-# poetic --> poetical !!!
-# repay --> repaid
-# slay --> slew
-# sow --> sown
-# splendor --> splendour
-# stern --> sternest
-# stewardess ???
-# stink --> stank !!!
-# vapor --> vapour
-# vigor --> vigour
 
-# Level6
-# adminstrate --> adminster
-# administration --> admin
-# alcoholic --> non-alcoholic
-# antenna --> antennae
-# criterion --> criteria
-# decent --> decent-sized
-# enactment --> re-enactment
-# expiration -- expiry
-# fling --> flung !!!
-# mimic --> mimicking !!!
-# oblige --> obligate !!!
-# preventive --> preventative
-# sheer --> sheerest
-# tread --> trodden !
-# tumor --> tumour !!!
-# undergo --> underwent !
-# undertake --> undertook　！
-# uphold --> upheld

@@ -33,11 +33,11 @@ function Progress({ username }) {
 
 	const columns = [
 		{ field: 'date', headerName: '日期', width: 120 },
-		{ field: 'total', headerName: '卡片數', width: 80 },
-		{ field: 'old', headerName: '舊卡片', width: 80 },
-		{ field: 'new', headerName: '新卡片', width: 80 },
-		{ field: 'skilled', headerName: '新精通', width: 80 },
-		{ field: 'correctRate', headerName: '正確率', width: 80 }, /* type: 'number', */
+		{ field: 'total', headerName: '卡片數', width: 90 },
+		{ field: 'old', headerName: '舊卡片', width: 90 },
+		{ field: 'new', headerName: '新卡片', width: 90 },
+		{ field: 'skilled', headerName: '新精通', width: 90 },
+		{ field: 'correctRate', headerName: '正確率', width: 90 }, /* type: 'number', */
 	];
 	  
 	useEffect(() => {

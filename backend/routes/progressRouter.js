@@ -50,7 +50,7 @@ router.get('/', async (req, res) => {
 		let temp = value;
 		temp['total'] = value['new'] + value['old'];
 		temp['correctRate'] = Math.round(value['correct'] / (value['correct'] 
-			+ value['incorrect']) * 10) / 10;
+			+ value['incorrect']) * 100) / 100;
 		new_daily_dict.push(temp);
 	} 
 
