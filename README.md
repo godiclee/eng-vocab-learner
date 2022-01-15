@@ -1,4 +1,4 @@
-# 英文單字學習
+# 英文單字學習程式 (20220115)
 
 ## Installation and Usage
 In the project directory, you can run:
