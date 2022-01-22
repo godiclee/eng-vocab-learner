@@ -28,7 +28,7 @@
     "web-vitals": "^2.1.2"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "nodemon server.js --ext js --exec babel-node",
     "build": "react-scripts build",
     "start_react": "react-scripts start",
     "test": "react-scripts test",
