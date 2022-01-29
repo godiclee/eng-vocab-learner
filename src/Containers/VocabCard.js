@@ -177,12 +177,12 @@ function VocabCard({ username }) {
       }
       setTimeout(() => { 
         getCard(); 
-      }, 0);
+      }, 300);
     } else {
       setTimeout(() => { 
         setUserAnswer(Array(card.holes.length).fill('')); 
         setShowHint(true);
-      }, 0);
+      }, 200);
     }
   }
 
