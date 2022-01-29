@@ -36,39 +36,102 @@ function VocabCard({ username }) {
   const [alreadyCorrect, setAlreadyCorrect] = useState(false); /* for progress bar color */
   const [alreadyWrong, setAlreadyWrong] = useState(false);
 
+  const [nextCard, setNextCard] = useState('');
+  const [nextHoles, setNextHoles] = useState([]);
+  const [nextScore, setNextScore] = useState();
+  const [nextNewCard, setNextNewCard] = useState(false);
+  const [nextShowFirst, setNextShowFirst] = useState(false);
+
   const getCard = async () => {
+    if (nextCard !== '') {
+      console.log('go');
+      setCard(nextCard);
+      setChi(nextCard.chi);
+      setEng(nextCard.eng);
+      setPos(nextCard.pos);
+      setChisen(nextCard.chisen);
+      setLevel(nextCard.level);
 
-    const {
-			data: { card, holes, score, newcard, show_first },
-		} = await axios.get('/card/get-card', {params: { username }});
+      let nextengsen_ = nextCard.engsen.split(' ');
+      setEngsen(nextengsen_);
 
-    setCard(card);
+      setHoles(nextHoles);
+      setNewCard(nextNewCard);
+      setShowFirst(nextShowFirst);
+      setProgress(nextScore * 0.1);
+      setBuffer(nextScore * 0.1);
 
-    setChi(card.chi);
-    setEng(card.eng);
-    setPos(card.pos);
-    setChisen(card.chisen);
-    setLevel(card.level);
-    
-    let engsen_ = card.engsen.split(' ');
-    setEngsen(engsen_);
-    
-    setHoles(holes);
-    setNewCard(newcard);
-    setShowFirst(show_first);
-    setProgress(score * 0.1);
-    setBuffer(score * 0.1);
+      setUserAnswer(Array(nextCard.holes.length).fill(''));
+      setShowHint(false);
+      setAlreadyCorrect(false);
+      setAlreadyWrong(false);
+      setCorrect(Array(nextCard.holes.length).fill(0));
+      setIncorrect(Array(nextCard.holes.length).fill(0));
 
-    setUserAnswer(Array(card.holes.length).fill(''));
-    setShowHint(false);
-    setAlreadyCorrect(false);
-    setAlreadyWrong(false);
-    setCorrect(Array(card.holes.length).fill(0));
-    setIncorrect(Array(card.holes.length).fill(0));
-
-    /* Focus on first TextField */
-    if (holes.length)
+      /* Focus on first TextField */
+      if (nextHoles.length)
       document.getElementById('0').focus();
+
+      var {
+        data: { card, holes, score, newcard, show_first },
+      } = await axios.get('/card/get-card', {params: { username }});
+  
+      if (newcard !== nextCard) {
+        setNextCard(card);
+        setNextHoles(holes);
+        setNextScore(score);
+        setNextNewCard(newcard);
+        setNextShowFirst(show_first);
+      } else {
+        setNextCard('');
+      }
+    } else {
+      var {
+        data: { card, holes, score, newcard, show_first },
+      } = await axios.get('/card/get-card', {params: { username }});
+      setCard(card);
+      setChi(card.chi);
+      setEng(card.eng);
+      setPos(card.pos);
+      setChisen(card.chisen);
+      setLevel(card.level);
+      
+      let engsen_ = card.engsen.split(' ');
+      setEngsen(engsen_);
+      
+      setHoles(holes);
+      setNewCard(newcard);
+      setShowFirst(show_first);
+      setProgress(score * 0.1);
+      setBuffer(score * 0.1);
+  
+      setUserAnswer(Array(card.holes.length).fill(''));
+      setShowHint(false);
+      setAlreadyCorrect(false);
+      setAlreadyWrong(false);
+      setCorrect(Array(card.holes.length).fill(0));
+      setIncorrect(Array(card.holes.length).fill(0));
+      
+      /* Focus on first TextField */
+      if (holes.length)
+        document.getElementById('0').focus();
+
+      var {
+        data: { card, holes, score, newcard, show_first },
+      } = await axios.get('/card/get-card', {params: { username }});
+      
+      if (newcard !== card) {
+        setNextCard(card);
+        setNextHoles(holes);
+        setNextScore(score);
+        setNextNewCard(newcard);
+        setNextShowFirst(show_first);
+      } else {
+        setNextCard('');
+      }
+    }
+
+
   };
 
   const updateCorrect = async () => {
@@ -114,12 +177,12 @@ function VocabCard({ username }) {
       }
       setTimeout(() => { 
         getCard(); 
-      }, 250);
+      }, 0);
     } else {
       setTimeout(() => { 
         setUserAnswer(Array(card.holes.length).fill('')); 
         setShowHint(true);
-      }, 1);
+      }, 0);
     }
   }
 
