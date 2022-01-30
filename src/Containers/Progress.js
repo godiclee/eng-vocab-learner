@@ -68,10 +68,10 @@ function Progress({ username }) {
 				<Grid item container xs={6} justifyContent='center'>
 					<Stack>
 						<Typography display='inline' color='common.black'> 
-							已精通的總卡片數:{' '}<strong>{totalNew}</strong>
+							已學過的總卡片數:{' '}<strong>{totalNew}</strong>
 						</Typography>
 						<Typography display='inline' color='common.black'>
-							已學過的總卡片數: {' '}<strong>{totalSkilled}</strong>
+							已精通的總卡片數: {' '}<strong>{totalSkilled}</strong>
 						</Typography>
 						<Typography display='inline' color='common.black'>
 							答對百分比: {' '}<strong>{totalCorrectPercent}%</strong>
