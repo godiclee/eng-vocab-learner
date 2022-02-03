@@ -47,7 +47,7 @@ router.post('/create-user', async (req, res) => {
 	const user = await User.findOne({ 'username' : req.body.username },
 		{ '_id' : 1 });
 
-	const card_level_count = [2540, 4020, 2575, 2332, 2115, 2067];
+	const card_level_count = [669, 768, 674, 527, 0, 0];
 	for (let i = 1; i <= 6; i++) {
 		const newLevel = new Level_Stats({
 			userId: user._id,

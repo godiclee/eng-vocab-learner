@@ -138,7 +138,7 @@ function VocabCard({ username }) {
     const {
 			data: { score },
 		} = await axios.post('/card/correct', { username, card, newCard });
-    setProgress(score * 0.1)
+    /*setProgress(score * 0.1)*/
   };
   
   const updateIncorrect = async () => {
